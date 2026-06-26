@@ -14,6 +14,7 @@ from app.schemas.availability_schema import (
 
 router = APIRouter(tags=["Availability"])
 
+
 @router.post(
     "/availability",
     response_model=AvailabilityResponse
@@ -25,7 +26,7 @@ def create_availability(
 ):
 
     slot = AvailabilitySlot(
-        day=data.day,
+        available_date=data.available_date,
         start_time=data.start_time,
         end_time=data.end_time,
         user_id=current_user.id
@@ -37,6 +38,7 @@ def create_availability(
 
     return slot
 
+
 @router.get(
     "/availability",
     response_model=list[AvailabilityResponse]
@@ -46,6 +48,7 @@ def get_availability(
 ):
 
     return current_user.availability_slots
+
 
 @router.delete("/availability/{slot_id}")
 def delete_slot(

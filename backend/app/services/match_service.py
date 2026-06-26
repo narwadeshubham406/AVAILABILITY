@@ -8,8 +8,7 @@ def has_availability_overlap(
     for current_slot in current_user.availability_slots:
 
         for other_slot in other_user.availability_slots:
-
-            if current_slot.day != other_slot.day:
+            if (current_slot.available_date!= other_slot.available_date):
                 continue
 
             if (

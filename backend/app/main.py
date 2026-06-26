@@ -12,6 +12,8 @@ from app.api.preference_api import router as preference_router
 from app.api.match_api import router as match_router
 from app.models.user_action import UserAction
 from app.api.action_api import router as action_router
+from app.models.match import Match
+from app.api.match_result_api import router as match_result_router
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
@@ -22,6 +24,7 @@ app.include_router(availability_router)
 app.include_router(preference_router)
 app.include_router(match_router)
 app.include_router(action_router)
+app.include_router(match_result_router)
 @app.get("/")
 def home():
     return {

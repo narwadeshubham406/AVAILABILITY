@@ -5,6 +5,7 @@ from app.db.session import get_db
 from app.auth.dependencies import get_current_user
 
 from app.models.user import User
+from app.models.user_action import UserAction
 
 from app.services.match_service import (
     calculate_match_score,
@@ -23,6 +24,18 @@ def get_matches(
 
     users = db.query(User).all()
 
+    # Users already liked/passed
+    seen_user_ids = {
+        action.to_user_id
+        for action in db.query(UserAction)
+        .filter(
+            UserAction.from_user_id
+            ==
+            current_user.id
+        )
+        .all()
+    }
+
     matches = []
 
     for user in users:
@@ -31,20 +44,22 @@ def get_matches(
         if user.id == current_user.id:
             continue
 
-        # Apply preference filter
+        # Skip already seen users
+        if user.id in seen_user_ids:
+            continue
+
+        # Apply mutual preference filter
         if not passes_mutual_preference_filter(
             current_user,
             user
         ):
             continue
 
-        # Calculate score
         score = calculate_match_score(
             current_user,
             user
         )
 
-        # Add match
         matches.append({
             "user_id": user.id,
             "name": user.name,
